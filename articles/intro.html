@@ -109,7 +109,7 @@
 <h2 class="hasAnchor">
 <a href="#data-boston-housing" class="anchor"></a>Data: Boston Housing</h2>
 <p>We’ll use the <code><a href="https://rdrr.io/pkg/MASS/man/Boston.html">MASS::Boston</a></code> dataset to demonstrate the abilities of the iml package. This dataset contains median house values from Boston neighbourhoods.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"Boston"</span>, <span class="dt">package  =</span> <span class="st">"MASS"</span>)</span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"Boston"</span>, <span class="dt">package =</span> <span class="st">"MASS"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(Boston)</span></code></pre></div>
 <pre><code>#&gt;      crim zn indus chas   nox    rm  age    dis rad tax ptratio  black lstat
 #&gt; 1 0.00632 18  2.31    0 0.538 6.575 65.2 4.0900   1 296    15.3 396.90  4.98
@@ -133,23 +133,24 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">42</span>)</span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"iml"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"randomForest"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"Boston"</span>, <span class="dt">package  =</span> <span class="st">"MASS"</span>)</span>
-<span id="cb3-5"><a href="#cb3-5"></a>rf =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest</a></span>(medv <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> Boston, <span class="dt">ntree =</span> <span class="dv">50</span>)</span></code></pre></div>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"Boston"</span>, <span class="dt">package =</span> <span class="st">"MASS"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5"></a>rf &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest</a></span>(medv <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> Boston, <span class="dt">ntree =</span> <span class="dv">50</span>)</span></code></pre></div>
 </div>
 <div id="using-the-iml-predictor-container" class="section level2">
 <h2 class="hasAnchor">
 <a href="#using-the-iml-predictor-container" class="anchor"></a>Using the iml Predictor() container</h2>
 <p>We create a <code>Predictor</code> object, that holds the model and the data. The iml package uses R6 classes: New objects can be created by calling <code>Predictor$new()</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>X =<span class="st"> </span>Boston[<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(Boston) <span class="op">!=</span><span class="st"> "medv"</span>)]</span>
-<span id="cb4-2"><a href="#cb4-2"></a>predictor =<span class="st"> </span>Predictor<span class="op">$</span><span class="kw">new</span>(rf, <span class="dt">data =</span> X, <span class="dt">y =</span> Boston<span class="op">$</span>medv)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>X &lt;-<span class="st"> </span>Boston[<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(Boston) <span class="op">!=</span><span class="st"> "medv"</span>)]</span>
+<span id="cb4-2"><a href="#cb4-2"></a>predictor &lt;-<span class="st"> </span>Predictor<span class="op">$</span><span class="kw">new</span>(rf, <span class="dt">data =</span> X, <span class="dt">y =</span> Boston<span class="op">$</span>medv)</span></code></pre></div>
 </div>
 <div id="feature-importance" class="section level2">
 <h2 class="hasAnchor">
 <a href="#feature-importance" class="anchor"></a>Feature importance</h2>
 <p>We can measure how important each feature was for the predictions with <code>FeatureImp</code>. The feature importance measure works by shuffling each feature and measuring how much the performance drops. For this regression task we choose to measure the loss in performance with the mean absolute error (‘mae’), another choice would be the mean squared error (‘mse’).</p>
 <p>Once we create a new object of <code>FeatureImp</code>, the importance is automatically computed. We can call the <code><a href="https://rdrr.io/r/graphics/plot.html">plot()</a></code> function of the object or look at the results in a data.frame.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>imp =<span class="st"> </span>FeatureImp<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">loss =</span> <span class="st">"mae"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(imp)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>imp &lt;-<span class="st"> </span>FeatureImp<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">loss =</span> <span class="st">"mae"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"ggplot2"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(imp)</span></code></pre></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>imp<span class="op">$</span>results</span></code></pre></div>
 <pre><code>#&gt;    feature importance.05 importance importance.95 permutation.error
@@ -171,118 +172,47 @@
 <h2 class="hasAnchor">
 <a href="#feature-effects" class="anchor"></a>Feature effects</h2>
 <p>Besides knowing which features were important, we are interested in how the features influence the predicted outcome. The <code>FeatureEffect</code> class implements accumulated local effect plots, partial dependence plots and individual conditional expectation curves. The following plot shows the accumulated local effects (ALE) for the feature ‘lstat’. ALE shows how the prediction changes locally, when the feature is varied. The marks on the x-axis indicates the distribution of the ‘lstat’ feature, showing how relevant a region is for interpretation (little or no points mean that we should not over-interpret this region).</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>ale =<span class="st"> </span>FeatureEffect<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">feature =</span> <span class="st">"lstat"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"ggplot2"</span>)</span></code></pre></div>
-<pre><code>#&gt; 
-#&gt; Attaching package: 'ggplot2'</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:crayon':
-#&gt; 
-#&gt;     %+%</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:randomForest':
-#&gt; 
-#&gt;     margin</code></pre>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>ale<span class="op">$</span><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>()</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>ale &lt;-<span class="st"> </span>FeatureEffect<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">feature =</span> <span class="st">"lstat"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>ale<span class="op">$</span><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>()</span></code></pre></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>If we want to compute the partial dependence curves on another feature, we can simply reset the feature:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>ale<span class="op">$</span><span class="kw">set.feature</span>(<span class="st">"rm"</span>)</span>
-<span id="cb13-2"><a href="#cb13-2"></a>ale<span class="op">$</span><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>()</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>ale<span class="op">$</span><span class="kw">set.feature</span>(<span class="st">"rm"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2"></a>ale<span class="op">$</span><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>()</span></code></pre></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="measure-interactions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#measure-interactions" class="anchor"></a>Measure interactions</h2>
 <p>We can also measure how strongly features interact with each other. The interaction measure regards how much of the variance of <span class="math inline">\(f(x)\)</span> is explained by the interaction. The measure is between 0 (no interaction) and 1 (= 100% of variance of <span class="math inline">\(f(x)\)</span> due to interactions). For each feature, we measure how much they interact with any other feature:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>interact =<span class="st"> </span>Interaction<span class="op">$</span><span class="kw">new</span>(predictor)</span></code></pre></div>
-<pre><code>#&gt; 
-#&gt; Attaching package: 'tibble'</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:assertthat':
-#&gt; 
-#&gt;     has_name</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>interact &lt;-<span class="st"> </span>Interaction<span class="op">$</span><span class="kw">new</span>(predictor)</span></code></pre></div>
 <pre><code>#&gt; 
 #&gt; Attaching package: 'withr'</code></pre>
 <pre><code>#&gt; The following objects are masked from 'package:rlang':
 #&gt; 
 #&gt;     local_options, with_options</code></pre>
-<pre><code>#&gt; 
-#&gt; Attaching package: 'dplyr'</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:pillar':
-#&gt; 
-#&gt;     dim_desc</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:desc':
-#&gt; 
-#&gt;     desc</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:gridExtra':
-#&gt; 
-#&gt;     combine</code></pre>
-<pre><code>#&gt; The following objects are masked from 'package:data.table':
-#&gt; 
-#&gt;     between, first, last</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:MASS':
-#&gt; 
-#&gt;     select</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:randomForest':
-#&gt; 
-#&gt;     combine</code></pre>
-<pre><code>#&gt; The following objects are masked from 'package:stats':
-#&gt; 
-#&gt;     filter, lag</code></pre>
-<pre><code>#&gt; The following objects are masked from 'package:base':
-#&gt; 
-#&gt;     intersect, setdiff, setequal, union</code></pre>
-<pre><code>#&gt; 
-#&gt; Attaching package: 'glue'</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:dplyr':
-#&gt; 
-#&gt;     collapse</code></pre>
-<pre><code>#&gt; 
-#&gt; Attaching package: 'purrr'</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:listenv':
-#&gt; 
-#&gt;     map</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:data.table':
-#&gt; 
-#&gt;     transpose</code></pre>
-<pre><code>#&gt; The following objects are masked from 'package:rlang':
-#&gt; 
-#&gt;     %@%, as_function, flatten, flatten_chr, flatten_dbl, flatten_int,
-#&gt;     flatten_lgl, flatten_raw, invoke, list_along, modify, prepend,
-#&gt;     splice</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:magrittr':
-#&gt; 
-#&gt;     set_names</code></pre>
-<pre><code>#&gt; 
-#&gt; Attaching package: 'scales'</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:purrr':
-#&gt; 
-#&gt;     discard</code></pre>
-<pre><code>#&gt; 
-#&gt; Attaching package: 'munsell'</code></pre>
-<pre><code>#&gt; The following object is masked from 'package:colorspace':
-#&gt; 
-#&gt;     desaturate</code></pre>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(interact)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(interact)</span></code></pre></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>We can also specify a feature and measure all it’s 2-way interactions with all other features:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a>interact =<span class="st"> </span>Interaction<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">feature =</span> <span class="st">"crim"</span>)</span>
-<span id="cb40-2"><a href="#cb40-2"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(interact)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>interact &lt;-<span class="st"> </span>Interaction<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">feature =</span> <span class="st">"crim"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(interact)</span></code></pre></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>You can also plot the feature effects for all features at once:</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>effs =<span class="st"> </span>FeatureEffects<span class="op">$</span><span class="kw">new</span>(predictor)</span>
-<span id="cb41-2"><a href="#cb41-2"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(effs)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>effs &lt;-<span class="st"> </span>FeatureEffects<span class="op">$</span><span class="kw">new</span>(predictor)</span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(effs)</span></code></pre></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="surrogate-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#surrogate-model" class="anchor"></a>Surrogate model</h2>
 <p>Another way to make the models more interpretable is to replace the black box with a simpler model - a decision tree. We take the predictions of the black box model (in our case the random forest) and train a decision tree on the original features and the predicted outcome. The plot shows the terminal nodes of the fitted tree. The maxdepth parameter controls how deep the tree can grow and therefore how interpretable it is.</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>tree =<span class="st"> </span>TreeSurrogate<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">maxdepth =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>tree &lt;-<span class="st"> </span>TreeSurrogate<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">maxdepth =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>#&gt; Loading required package: partykit</code></pre>
 <pre><code>#&gt; Loading required package: libcoin</code></pre>
 <pre><code>#&gt; Loading required package: mvtnorm</code></pre>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(tree)</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(tree)</span></code></pre></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>We can use the tree to make predictions:</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(tree<span class="op">$</span><span class="kw"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(Boston))</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(tree<span class="op">$</span><span class="kw"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(Boston))</span></code></pre></div>
 <pre><code>#&gt; Warning in self$predictor$data$match_cols(data.frame(newdata)): Dropping
 #&gt; additional columns: medv</code></pre>
 <pre><code>#&gt;     .y.hat
@@ -297,36 +227,36 @@
 <h2 class="hasAnchor">
 <a href="#explain-single-predictions-with-a-local-model" class="anchor"></a>Explain single predictions with a local model</h2>
 <p>Global surrogate model can improve the understanding of the global model behaviour. We can also fit a model locally to understand an individual prediction better. The local model fitted by <code>LocalModel</code> is a linear regression model and the data points are weighted by how close they are to the data point for wich we want to explain the prediction.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1"></a>lime.explain =<span class="st"> </span>LocalModel<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">x.interest =</span> X[<span class="dv">1</span>,])</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>lime.explain &lt;-<span class="st"> </span>LocalModel<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">x.interest =</span> X[<span class="dv">1</span>, ])</span></code></pre></div>
 <pre><code>#&gt; Loading required package: glmnet</code></pre>
 <pre><code>#&gt; Loading required package: Matrix</code></pre>
 <pre><code>#&gt; Loaded glmnet 3.0-2</code></pre>
 <pre><code>#&gt; Loading required package: gower</code></pre>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1"></a>lime.explain<span class="op">$</span>results</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>lime.explain<span class="op">$</span>results</span></code></pre></div>
 <pre><code>#&gt;               beta x.recoded    effect x.original feature feature.value
 #&gt; rm       4.4836483     6.575 29.479987      6.575      rm      rm=6.575
 #&gt; ptratio -0.5244767    15.300 -8.024493       15.3 ptratio  ptratio=15.3
 #&gt; lstat   -0.4348698     4.980 -2.165652       4.98   lstat    lstat=4.98</code></pre>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(lime.explain)</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(lime.explain)</span></code></pre></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1"></a>lime.explain<span class="op">$</span><span class="kw">explain</span>(X[<span class="dv">2</span>,])</span>
-<span id="cb58-2"><a href="#cb58-2"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(lime.explain)</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>lime.explain<span class="op">$</span><span class="kw">explain</span>(X[<span class="dv">2</span>, ])</span>
+<span id="cb32-2"><a href="#cb32-2"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(lime.explain)</span></code></pre></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="explain-single-predictions-with-game-theory" class="section level2">
 <h2 class="hasAnchor">
 <a href="#explain-single-predictions-with-game-theory" class="anchor"></a>Explain single predictions with game theory</h2>
 <p>An alternative for explaining individual predictions is a method from coalitional game theory named Shapley value. Assume that for one data point, the feature values play a game together, in which they get the prediction as a payout. The Shapley value tells us how to fairly distribute the payout among the feature values.</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1"></a>shapley =<span class="st"> </span>Shapley<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">x.interest =</span> X[<span class="dv">1</span>,])</span>
-<span id="cb59-2"><a href="#cb59-2"></a>shapley<span class="op">$</span><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>()</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a>shapley &lt;-<span class="st"> </span>Shapley<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">x.interest =</span> X[<span class="dv">1</span>, ])</span>
+<span id="cb33-2"><a href="#cb33-2"></a>shapley<span class="op">$</span><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>()</span></code></pre></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>We can reuse the object to explain other data points:</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1"></a>shapley<span class="op">$</span><span class="kw">explain</span>(<span class="dt">x.interest =</span> X[<span class="dv">2</span>,])</span>
-<span id="cb60-2"><a href="#cb60-2"></a>shapley<span class="op">$</span><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>()</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>shapley<span class="op">$</span><span class="kw">explain</span>(<span class="dt">x.interest =</span> X[<span class="dv">2</span>, ])</span>
+<span id="cb34-2"><a href="#cb34-2"></a>shapley<span class="op">$</span><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>()</span></code></pre></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>The results in data.frame form can be extracted like this:</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1"></a>results =<span class="st"> </span>shapley<span class="op">$</span>results</span>
-<span id="cb61-2"><a href="#cb61-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(results)</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>results &lt;-<span class="st"> </span>shapley<span class="op">$</span>results</span>
+<span id="cb35-2"><a href="#cb35-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(results)</span></code></pre></div>
 <pre><code>#&gt;   feature          phi    phi.var feature.value
 #&gt; 1    crim -0.030772464 0.88726982  crim=0.02731
 #&gt; 2      zn -0.009163333 0.01266404          zn=0
