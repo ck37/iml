@@ -130,27 +130,27 @@
 <span id="cb4-3"><a href="#cb4-3"></a>  FeatureImp<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">loss =</span> <span class="st">"mae"</span>)</span>
 <span id="cb4-4"><a href="#cb4-4"></a>})</span>
 <span id="cb4-5"><a href="#cb4-5"></a><span class="co">#&gt; process    real </span></span>
-<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt;   4.14s   2.34s</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt;   4.27s   2.42s</span></span>
 <span id="cb4-7"><a href="#cb4-7"></a>bench<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/bench/man/bench_time.html">system_time</a></span>({</span>
 <span id="cb4-8"><a href="#cb4-8"></a>  <span class="kw"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span>(<span class="st">"callr"</span>, <span class="dt">workers =</span> <span class="dv">2</span>)</span>
 <span id="cb4-9"><a href="#cb4-9"></a>  FeatureImp<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">loss =</span> <span class="st">"mae"</span>)</span>
 <span id="cb4-10"><a href="#cb4-10"></a>})</span>
 <span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt; process    real </span></span>
-<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt;   2.12s   5.12s</span></span></code></pre></div>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt;   2.13s   5.15s</span></span></code></pre></div>
 <p>A little bit of improvement, but not too impressive. Parallelization is more useful in the case where the model uses a lot of features or where the feature importance computation is repeated more often to get more stable results.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>bench<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/bench/man/bench_time.html">system_time</a></span>({</span>
 <span id="cb5-2"><a href="#cb5-2"></a>  <span class="kw"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span>(sequential)</span>
 <span id="cb5-3"><a href="#cb5-3"></a>  FeatureImp<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">loss =</span> <span class="st">"mae"</span>, <span class="dt">n.repetitions =</span> <span class="dv">20</span>)</span>
 <span id="cb5-4"><a href="#cb5-4"></a>})</span>
 <span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt; process    real </span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt;  14.71s   7.38s</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt;  14.65s   7.34s</span></span>
 <span id="cb5-7"><a href="#cb5-7"></a></span>
 <span id="cb5-8"><a href="#cb5-8"></a>bench<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/bench/man/bench_time.html">system_time</a></span>({</span>
 <span id="cb5-9"><a href="#cb5-9"></a>  <span class="kw"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span>(<span class="st">"callr"</span>, <span class="dt">workers =</span> <span class="dv">2</span>)</span>
 <span id="cb5-10"><a href="#cb5-10"></a>  FeatureImp<span class="op">$</span><span class="kw">new</span>(predictor, <span class="dt">loss =</span> <span class="st">"mae"</span>, <span class="dt">n.repetitions =</span> <span class="dv">20</span>)</span>
 <span id="cb5-11"><a href="#cb5-11"></a>})</span>
 <span id="cb5-12"><a href="#cb5-12"></a><span class="co">#&gt; process    real </span></span>
-<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt;   2.13s   7.62s</span></span></code></pre></div>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt;   2.11s   7.65s</span></span></code></pre></div>
 <div id="interaction" class="section level3">
 <h3 class="hasAnchor">
 <a href="#interaction" class="anchor"></a>Interaction</h3>
@@ -161,13 +161,13 @@
 <span id="cb6-3"><a href="#cb6-3"></a>  Interaction<span class="op">$</span><span class="kw">new</span>(predictor)</span>
 <span id="cb6-4"><a href="#cb6-4"></a>})</span>
 <span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; process    real </span></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt;   17.5s   12.4s</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt;   17.2s   12.1s</span></span>
 <span id="cb6-7"><a href="#cb6-7"></a>bench<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/bench/man/bench_time.html">system_time</a></span>({</span>
 <span id="cb6-8"><a href="#cb6-8"></a>  <span class="kw"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span>(<span class="st">"callr"</span>, <span class="dt">workers =</span> <span class="dv">2</span>)</span>
 <span id="cb6-9"><a href="#cb6-9"></a>  Interaction<span class="op">$</span><span class="kw">new</span>(predictor)</span>
 <span id="cb6-10"><a href="#cb6-10"></a>})</span>
 <span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt; process    real </span></span>
-<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt;   2.14s  10.05s</span></span></code></pre></div>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt;   2.12s  10.08s</span></span></code></pre></div>
 </div>
 <div id="feature-effects" class="section level3">
 <h3 class="hasAnchor">
@@ -178,13 +178,13 @@
 <span id="cb7-3"><a href="#cb7-3"></a>  FeatureEffects<span class="op">$</span><span class="kw">new</span>(predictor)</span>
 <span id="cb7-4"><a href="#cb7-4"></a>})</span>
 <span id="cb7-5"><a href="#cb7-5"></a><span class="co">#&gt;  process     real </span></span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="co">#&gt;    1.73s 910.44ms</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="co">#&gt;    1.77s 930.49ms</span></span>
 <span id="cb7-7"><a href="#cb7-7"></a>bench<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/bench/man/bench_time.html">system_time</a></span>({</span>
 <span id="cb7-8"><a href="#cb7-8"></a>  <span class="kw"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span>(<span class="st">"callr"</span>, <span class="dt">workers =</span> <span class="dv">2</span>)</span>
 <span id="cb7-9"><a href="#cb7-9"></a>  FeatureEffects<span class="op">$</span><span class="kw">new</span>(predictor)</span>
 <span id="cb7-10"><a href="#cb7-10"></a>})</span>
 <span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt; process    real </span></span>
-<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt;   7.77s   12.5s</span></span></code></pre></div>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt;   7.71s  12.45s</span></span></code></pre></div>
 </div>
 </div>
   </div>
