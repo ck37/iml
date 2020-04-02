@@ -136,7 +136,7 @@
 <ul>
 <li>Removes the <code>run</code> parameter from all interpretation methods.</li>
 <li>Adds class <code>FeatureEffects</code> which wraps <code>FeatureEffect</code> and allows to compute feature effects for all features of a model with one call.</li>
-<li>Add column “.type” to <code>$result</code> data.frame of <code>FeatureEffect</code> when <code>method="ale"</code> and the feature is categorical</li>
+<li>Add column â.typeâ to <code>$result</code> data.frame of <code>FeatureEffect</code> when <code>method="ale"</code> and the feature is categorical</li>
 <li>Adds parameter <code>ylim</code> to <code>FeatureEffect$plot</code> to manually set the limits of the y-axis for feature effect plots with one feature.</li>
 <li>Adds <code>predict</code> method to FeatureEffect, which predicts the marginal effect for data instances.</li>
 </ul>
@@ -163,7 +163,7 @@
 </ul>
 </li>
 <li>Fixes problems with missing centering of ALE plots when using multiclass</li>
-<li>Automatically extracts data and target from the model when possible (based on the <code><a href="https://rdrr.io/pkg/prediction/man/find_data.html">prediction::find_data</a></code> function). Data extraction doesn’t work with mlr, but target extraction does.</li>
+<li>Automatically extracts data and target from the model when possible (based on the <code><a href="https://rdrr.io/pkg/prediction/man/find_data.html">prediction::find_data</a></code> function). Data extraction doesnât work with mlr, but target extraction does.</li>
 <li>Feature importance (<code>FeatureImp</code>) automatically returned the ratio of permuted model error and original model error. With 0.7.2 the user can choose between the ratio (default) and the difference.</li>
 </ul>
 </div>
@@ -180,7 +180,7 @@
 <a href="#iml-070" class="anchor"></a>iml 0.7.0<small> 2018-09-11 </small>
 </h1>
 <ul>
-<li>The <code>Partial</code> class is deprecated and will be removed in future versions. You should use <code>FeatureEffect</code> now. Its usage is similar to <code>Partial</code> but the <code>aggregation</code> and <code>ice</code> argument are now combined in the new <code>method</code> argument, where you can choose between ‘ale’, ‘pdp’, ‘ice’, ‘pdp+ice’.</li>
+<li>The <code>Partial</code> class is deprecated and will be removed in future versions. You should use <code>FeatureEffect</code> now. Its usage is similar to <code>Partial</code> but the <code>aggregation</code> and <code>ice</code> argument are now combined in the new <code>method</code> argument, where you can choose between âaleâ, âpdpâ, âiceâ, âpdp+iceâ.</li>
 <li>Introduced ALE plots into the <code>FeatureEffect</code> class (<code>method='ale'</code>). They are now the default instead of PDPs, because they are faster and unbiased.</li>
 <li>Plot for categorical features in PDP changed. Now showing bar plots instead of boxplots when <code>method='pdp'</code>
 </li>
@@ -191,10 +191,10 @@
 <a href="#iml-06" class="anchor"></a>iml 0.6<small> Unreleased </small>
 </h1>
 <ul>
-<li>Removed losses: f1, logLoss, rmse, mdae, rae, rmse, rmsle, rse, rrse f1 because the implementation used didn’t make sense anyways</li>
+<li>Removed losses: f1, logLoss, rmse, mdae, rae, rmse, rmsle, rse, rrse f1 because the implementation used didnât make sense anyways</li>
 <li>Interaction: The results return as interaction strength now the H-statistic instead of the H-squared-statistic. This makes it more coherent with the gbm pacakge and the interact.gbm function and with what Friedman uses in the plots in the paper. For users of the package this means that an interaction of strength x becomes an interaction of strength sqrt(x).</li>
 <li>
-<code>Interaction</code>, <code>FeatureImp</code> and <code>Partial</code> are now computed batch-wise in the background. This prevents this methods from overloading the memory. For that, the <code>Predictor</code> has a new init argument ‘batch.size’ which limits the number of rows send to the model for prediction for the methods <code>Interaction</code>, <code>FeatureImp</code> and <code>Partial</code>.</li>
+<code>Interaction</code>, <code>FeatureImp</code> and <code>Partial</code> are now computed batch-wise in the background. This prevents this methods from overloading the memory. For that, the <code>Predictor</code> has a new init argument âbatch.sizeâ which limits the number of rows send to the model for prediction for the methods <code>Interaction</code>, <code>FeatureImp</code> and <code>Partial</code>.</li>
 <li>
 <code>Interaction</code> and <code>FeatureImp</code> additionally allow parallel computation on multiple cores. See <code><a href="../articles/parallel.html">vignette("parallel", package = "iml")</a></code> for how to use it.</li>
 </ul>
@@ -204,8 +204,8 @@
 <a href="#iml-052" class="anchor"></a>iml 0.5.2<small> Unreleased </small>
 </h1>
 <ul>
-<li>The <code>Predictor</code> can be initialized with a <code>type</code> (e.g. <code>type = "prob"</code>), which is more convenient than writing a custom <code>predict.fun</code>. For caret classification models, the default is now to return the response, so make sure to initialize the <code>Predictor</code> with <code>type = "prob"</code> for fine-grained results.</li>
-<li>It’s easier to use classifier that output class labels and no probabilities. No warning will be issued anymore. Internally, the class labels are treated as probabilities (one column per class), where the probability for the predicted class is 1, for the others 0.</li>
+<li>The <code>Predictor</code> can be initialized with a <code>type</code> (e.g.Â <code>type = "prob"</code>), which is more convenient than writing a custom <code>predict.fun</code>. For caret classification models, the default is now to return the response, so make sure to initialize the <code>Predictor</code> with <code>type = "prob"</code> for fine-grained results.</li>
+<li>Itâs easier to use classifier that output class labels and no probabilities. No warning will be issued anymore. Internally, the class labels are treated as probabilities (one column per class), where the probability for the predicted class is 1, for the others 0.</li>
 <li>
 <code>FeatureImp</code> supports the <code>n.repetitions</code> parameter which controls the number of repetitions of the feature shuffling.</li>
 </ul>
@@ -228,7 +228,7 @@
 <code>object$run()</code> does not return <code>self</code> any longer. This means using <code>object$set.feature()</code> for example does not automatically print the object summary any longer.</li>
 <li>Added an introductory vignette.</li>
 <li>Fixed an issue where the Predictor would not store X, when y is given as character.</li>
-<li>The column names of the data.frames with the results of the interpretation methods start with “.” instead of “..”. This is due to a recent change in the data.table package v1.10.5 <a href="https://github.com/Rdatatable/data.table/blob/master/NEWS.md">news item 18</a>.</li>
+<li>The column names of the data.frames with the results of the interpretation methods start with â.â instead of â..â. This is due to a recent change in the data.table package v1.10.5 <a href="https://github.com/Rdatatable/data.table/blob/master/NEWS.md">news item 18</a>.</li>
 <li>Removed the deprecated classes <code>PartialDependence</code> and <code>Ice</code>. Use <code>Partial</code> instead.</li>
 </ul>
 </div>
@@ -243,7 +243,7 @@
 <ul>
 <li>The newly introduced Partial class can plot ice and pd curves, also in the same plot</li>
 <li>It is now possible to center partial dependence plots</li>
-<li>In obj$results has a new column “type” which contains either “ice” or “pdp”. The column ..individual was renamed to “..id” and “y.hat” has been renamed to “..y.hat”.</li>
+<li>In obj$results has a new column âtypeâ which contains either âiceâ or âpdpâ. The column ..individual was renamed to â..idâ and ây.hatâ has been renamed to â..y.hatâ.</li>
 <li>Ice and PartialDependence will be deprecated starting from 0.4.x</li>
 <li>Adds argument and field types in the documentation</li>
 </ul>
