@@ -129,6 +129,37 @@
       <small>Source: <a href='https://github.com/christophM/iml/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="iml-01009000" class="section level1">
+<h1 class="page-header" data-toc-text="0.10.0.9000">
+<a href="#iml-01009000" class="anchor"></a>iml 0.10.0.9000<small> Unreleased </small>
+</h1>
+</div>
+    <div id="iml-0100" class="section level1">
+<h1 class="page-header" data-toc-text="0.10.0">
+<a href="#iml-0100" class="anchor"></a>iml 0.10.0<small> 2020-03-26 </small>
+</h1>
+<ul>
+<li>Changes to <code>FeatureEffect$results</code> <code>data.frame</code>:
+<ul>
+<li>All numeric values are stored in .value (no more <code>.y.hat</code> and <code>.ale</code>)</li>
+<li>Additional column .type denoting the Feature Effect type</li>
+<li>renamed column .feature to .borders. This column stores the grid borders which were used for computing the FE with respect to the used method</li>
+<li>For ALE type the column containing the feature name was moved to the front (as it is for the other types)</li>
+</ul>
+</li>
+<li>Adds support for {h2o}</li>
+<li>Adds support for {keras}</li>
+<li>Adds support for {mlr3}</li>
+<li>Fixes problem with FeatureImp that caused unused features to get non-zero importances</li>
+<li>
+<code>FeatureEffects\$plot()</code> based on {patchwork} now</li>
+<li>Use roxygen R6 documentation</li>
+<li>Use the {future} framework for parallel code execution</li>
+<li>Test on GitHub Actions instead of Travis</li>
+<li>Add a {pkgdown} site</li>
+<li>Use the “callr” backend in “parallel” vignette</li>
+</ul>
+</div>
     <div id="iml-090" class="section level1">
 <h1 class="page-header" data-toc-text="0.9.0">
 <a href="#iml-090" class="anchor"></a>iml 0.9.0<small> 2019-02-05 </small>
@@ -287,7 +318,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Christoph Molnar, Patrick Schratz.</p>
+  <p>Developed by Christoph Molnar, <a href='https://pat-s.me'>Patrick Schratz</a>.</p>
 </div>
 
 <div class="pkgdown">
