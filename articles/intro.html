@@ -147,10 +147,10 @@
 <h2 class="hasAnchor">
 <a href="#feature-importance" class="anchor"></a>Feature importance</h2>
 <p>We can measure how important each feature was for the predictions with <code>FeatureImp</code>. The feature importance measure works by shuffling each feature and measuring how much the performance drops. For this regression task we choose to measure the loss in performance with the mean absolute error (‘mae’), another choice would be the mean squared error (‘mse’).</p>
-<p>Once we create a new object of <code>FeatureImp</code>, the importance is automatically computed. We can call the <code><a href="https://rdrr.io/r/graphics/plot.html">plot()</a></code> function of the object or look at the results in a data.frame.</p>
+<p>Once we create a new object of <code>FeatureImp</code>, the importance is automatically computed. We can call the <code><a href="https://rdrr.io/r/base/plot.html">plot()</a></code> function of the object or look at the results in a data.frame.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">imp</span> <span class="kw">&lt;-</span> <span class="no">FeatureImp</span>$<span class="fu">new</span>(<span class="no">predictor</span>, <span class="kw">loss</span> <span class="kw">=</span> <span class="st">"mae"</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"ggplot2"</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">imp</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">imp</span>)</pre></body></html></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">imp</span>$<span class="no">results</span></pre></body></html></div>
 <pre><code>#&gt;    feature importance.05 importance importance.95 permutation.error
@@ -173,11 +173,11 @@
 <a href="#feature-effects" class="anchor"></a>Feature effects</h2>
 <p>Besides knowing which features were important, we are interested in how the features influence the predicted outcome. The <code>FeatureEffect</code> class implements accumulated local effect plots, partial dependence plots and individual conditional expectation curves. The following plot shows the accumulated local effects (ALE) for the feature ‘lstat’. ALE shows how the prediction changes locally, when the feature is varied. The marks on the x-axis indicates the distribution of the ‘lstat’ feature, showing how relevant a region is for interpretation (little or no points mean that we should not over-interpret this region).</p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">ale</span> <span class="kw">&lt;-</span> <span class="no">FeatureEffect</span>$<span class="fu">new</span>(<span class="no">predictor</span>, <span class="kw">feature</span> <span class="kw">=</span> <span class="st">"lstat"</span>)
-<span class="no">ale</span>$<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>()</pre></body></html></div>
+<span class="no">ale</span>$<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>()</pre></body></html></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>If we want to compute the partial dependence curves on another feature, we can simply reset the feature:</p>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">ale</span>$<span class="fu">set.feature</span>(<span class="st">"rm"</span>)
-<span class="no">ale</span>$<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>()</pre></body></html></div>
+<span class="no">ale</span>$<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>()</pre></body></html></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="measure-interactions" class="section level2">
@@ -193,15 +193,15 @@
 <pre><code>#&gt; The following object is masked from 'package:tools':
 #&gt; 
 #&gt;     makevars_user</code></pre>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">interact</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">interact</span>)</pre></body></html></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>We can also specify a feature and measure all it’s 2-way interactions with all other features:</p>
 <div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">interact</span> <span class="kw">&lt;-</span> <span class="no">Interaction</span>$<span class="fu">new</span>(<span class="no">predictor</span>, <span class="kw">feature</span> <span class="kw">=</span> <span class="st">"crim"</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">interact</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">interact</span>)</pre></body></html></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>You can also plot the feature effects for all features at once:</p>
 <div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="no">effs</span> <span class="kw">&lt;-</span> <span class="no">FeatureEffects</span>$<span class="fu">new</span>(<span class="no">predictor</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">effs</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">effs</span>)</pre></body></html></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="surrogate-model" class="section level2">
@@ -212,7 +212,7 @@
 <pre><code>#&gt; Loading required package: partykit</code></pre>
 <pre><code>#&gt; Loading required package: libcoin</code></pre>
 <pre><code>#&gt; Loading required package: mvtnorm</code></pre>
-<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">tree</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">tree</span>)</pre></body></html></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>We can use the tree to make predictions:</p>
 <div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">tree</span>$<span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span>(<span class="no">Boston</span>))</pre></body></html></div>
@@ -240,10 +240,10 @@
 #&gt; rm       4.4836483     6.575 29.479987      6.575      rm      rm=6.575
 #&gt; ptratio -0.5244767    15.300 -8.024493       15.3 ptratio  ptratio=15.3
 #&gt; lstat   -0.4348698     4.980 -2.165652       4.98   lstat    lstat=4.98</code></pre>
-<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">lime.explain</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">lime.explain</span>)</pre></body></html></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="no">lime.explain</span>$<span class="fu">explain</span>(<span class="no">X</span>[<span class="fl">2</span>, ])
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">lime.explain</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">lime.explain</span>)</pre></body></html></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;"></p>
 </div>
 <div id="explain-single-predictions-with-game-theory" class="section level2">
@@ -251,11 +251,11 @@
 <a href="#explain-single-predictions-with-game-theory" class="anchor"></a>Explain single predictions with game theory</h2>
 <p>An alternative for explaining individual predictions is a method from coalitional game theory named Shapley value. Assume that for one data point, the feature values play a game together, in which they get the prediction as a payout. The Shapley value tells us how to fairly distribute the payout among the feature values.</p>
 <div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="no">shapley</span> <span class="kw">&lt;-</span> <span class="no">Shapley</span>$<span class="fu">new</span>(<span class="no">predictor</span>, <span class="kw">x.interest</span> <span class="kw">=</span> <span class="no">X</span>[<span class="fl">1</span>, ])
-<span class="no">shapley</span>$<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>()</pre></body></html></div>
+<span class="no">shapley</span>$<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>()</pre></body></html></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>We can reuse the object to explain other data points:</p>
 <div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="no">shapley</span>$<span class="fu">explain</span>(<span class="kw">x.interest</span> <span class="kw">=</span> <span class="no">X</span>[<span class="fl">2</span>, ])
-<span class="no">shapley</span>$<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>()</pre></body></html></div>
+<span class="no">shapley</span>$<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>()</pre></body></html></div>
 <p><img src="intro_files/figure-html/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>The results in data.frame form can be extracted like this:</p>
 <div class="sourceCode" id="cb36"><html><body><pre class="r"><span class="no">results</span> <span class="kw">&lt;-</span> <span class="no">shapley</span>$<span class="no">results</span>

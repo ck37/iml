@@ -122,7 +122,7 @@
 <span class="co">#&gt; The following object is masked from 'package:randomForest':</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     margin</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">imp</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">imp</span>)</pre></body></html></div>
 <p><img src="parallel_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>That wasn’t very impressive, let’s actually see how much speed up we get by parallelization.</p>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/bench/man/bench_time.html">system_time</a></span>({
@@ -130,27 +130,27 @@
   <span class="no">FeatureImp</span>$<span class="fu">new</span>(<span class="no">predictor</span>, <span class="kw">loss</span> <span class="kw">=</span> <span class="st">"mae"</span>)
 })
 <span class="co">#&gt; process    real </span>
-<span class="co">#&gt;   4.38s   2.47s</span>
+<span class="co">#&gt;   2.24s   2.24s</span>
 <span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/bench/man/bench_time.html">system_time</a></span>({
   <span class="fu"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span>(<span class="st">"callr"</span>, <span class="kw">workers</span> <span class="kw">=</span> <span class="fl">2</span>)
   <span class="no">FeatureImp</span>$<span class="fu">new</span>(<span class="no">predictor</span>, <span class="kw">loss</span> <span class="kw">=</span> <span class="st">"mae"</span>)
 })
 <span class="co">#&gt; process    real </span>
-<span class="co">#&gt;   2.12s   5.22s</span></pre></body></html></div>
+<span class="co">#&gt;   2.35s   5.26s</span></pre></body></html></div>
 <p>A little bit of improvement, but not too impressive. Parallelization is more useful in the case where the model uses a lot of features or where the feature importance computation is repeated more often to get more stable results.</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/bench/man/bench_time.html">system_time</a></span>({
   <span class="fu"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span>(<span class="no">sequential</span>)
   <span class="no">FeatureImp</span>$<span class="fu">new</span>(<span class="no">predictor</span>, <span class="kw">loss</span> <span class="kw">=</span> <span class="st">"mae"</span>, <span class="kw">n.repetitions</span> <span class="kw">=</span> <span class="fl">20</span>)
 })
 <span class="co">#&gt; process    real </span>
-<span class="co">#&gt;  15.34s   7.69s</span>
+<span class="co">#&gt;   6.91s   6.92s</span>
 
 <span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/bench/man/bench_time.html">system_time</a></span>({
   <span class="fu"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span>(<span class="st">"callr"</span>, <span class="kw">workers</span> <span class="kw">=</span> <span class="fl">2</span>)
   <span class="no">FeatureImp</span>$<span class="fu">new</span>(<span class="no">predictor</span>, <span class="kw">loss</span> <span class="kw">=</span> <span class="st">"mae"</span>, <span class="kw">n.repetitions</span> <span class="kw">=</span> <span class="fl">20</span>)
 })
 <span class="co">#&gt; process    real </span>
-<span class="co">#&gt;   2.11s   7.78s</span></pre></body></html></div>
+<span class="co">#&gt;   2.34s   7.77s</span></pre></body></html></div>
 <div id="interaction" class="section level3">
 <h3 class="hasAnchor">
 <a href="#interaction" class="anchor"></a>Interaction</h3>
@@ -161,13 +161,13 @@
   <span class="no">Interaction</span>$<span class="fu">new</span>(<span class="no">predictor</span>)
 })
 <span class="co">#&gt; process    real </span>
-<span class="co">#&gt;   17.6s   12.6s</span>
+<span class="co">#&gt;   11.7s   11.7s</span>
 <span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/bench/man/bench_time.html">system_time</a></span>({
   <span class="fu"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span>(<span class="st">"callr"</span>, <span class="kw">workers</span> <span class="kw">=</span> <span class="fl">2</span>)
   <span class="no">Interaction</span>$<span class="fu">new</span>(<span class="no">predictor</span>)
 })
 <span class="co">#&gt; process    real </span>
-<span class="co">#&gt;   2.14s  10.63s</span></pre></body></html></div>
+<span class="co">#&gt;   2.36s  10.11s</span></pre></body></html></div>
 </div>
 <div id="feature-effects" class="section level3">
 <h3 class="hasAnchor">
@@ -178,13 +178,13 @@
   <span class="no">FeatureEffects</span>$<span class="fu">new</span>(<span class="no">predictor</span>)
 })
 <span class="co">#&gt; process    real </span>
-<span class="co">#&gt;   1.96s   1.02s</span>
+<span class="co">#&gt;   838ms   838ms</span>
 <span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/bench/man/bench_time.html">system_time</a></span>({
   <span class="fu"><a href="https://rdrr.io/pkg/future/man/plan.html">plan</a></span>(<span class="st">"callr"</span>, <span class="kw">workers</span> <span class="kw">=</span> <span class="fl">2</span>)
   <span class="no">FeatureEffects</span>$<span class="fu">new</span>(<span class="no">predictor</span>)
 })
 <span class="co">#&gt; process    real </span>
-<span class="co">#&gt;   7.67s  12.62s</span></pre></body></html></div>
+<span class="co">#&gt;   9.68s  15.39s</span></pre></body></html></div>
 </div>
 </div>
   </div>

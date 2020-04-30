@@ -252,7 +252,7 @@ multi-dimensional outcome - per class.</p>
 <span class='no'>ia</span> <span class='kw'>&lt;-</span> <span class='no'>Interaction</span>$<span class='fu'>new</span>(<span class='no'>mod</span>)
 
 <span class='co'># Plot the resulting leaf nodes</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>ia</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>ia</span>)
 
 <span class='co'># Extract the results</span>
 <span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='no'>ia</span>$<span class='no'>results</span>
@@ -266,11 +266,11 @@ multi-dimensional outcome - per class.</p>
 <span class='co'># predict function</span>
 <span class='no'>ia</span> <span class='kw'>&lt;-</span> <span class='no'>Interaction</span>$<span class='fu'>new</span>(<span class='no'>mod</span>)
 
-<span class='no'>ia</span>$<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>()
+<span class='no'>ia</span>$<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>()
 
 <span class='co'># For multiclass classification models, you can choose to only show one class:</span>
 <span class='no'>mod</span> <span class='kw'>&lt;-</span> <span class='no'>Predictor</span>$<span class='fu'>new</span>(<span class='no'>rf</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>iris</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"prob"</span>, <span class='kw'>class</span> <span class='kw'>=</span> <span class='st'>"virginica"</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>Interaction</span>$<span class='fu'>new</span>(<span class='no'>mod</span>))
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>Interaction</span>$<span class='fu'>new</span>(<span class='no'>mod</span>))
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

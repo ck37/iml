@@ -323,12 +323,12 @@ Single row with the instance to be explained.</p></dd>
 <span class='no'>lemon</span>$<span class='no'>results</span></div><div class='output co'>#&gt;             beta x.recoded    effect x.original feature feature.value
 #&gt; rm     2.9180763     6.575 19.186352      6.575      rm      rm=6.575
 #&gt; lstat -0.3078282     4.980 -1.532985       4.98   lstat    lstat=4.98</div><div class='input'><span class='co'># Or as a plot</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>lemon</span>)</div><div class='img'><img src='LocalModel-1.png' alt='' width='700' height='433' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>lemon</span>)</div><div class='img'><img src='LocalModel-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># Reuse the object with a new instance to explain</span>
 <span class='no'>lemon</span>$<span class='no'>x.interest</span></div><div class='output co'>#&gt;      crim zn indus chas   nox    rm  age  dis rad tax ptratio black lstat
 #&gt; 1 0.00632 18  2.31    0 0.538 6.575 65.2 4.09   1 296    15.3 396.9  4.98</div><div class='input'><span class='no'>lemon</span>$<span class='fu'>explain</span>(<span class='no'>X</span>[<span class='fl'>2</span>, ])
 <span class='no'>lemon</span>$<span class='no'>x.interest</span></div><div class='output co'>#&gt;      crim zn indus chas   nox    rm  age    dis rad tax ptratio black lstat
-#&gt; 2 0.02731  0  7.07    0 0.469 6.421 78.9 4.9671   2 242    17.8 396.9  9.14</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>lemon</span>)</div><div class='img'><img src='LocalModel-2.png' alt='' width='700' height='433' /></div><div class='input'>
+#&gt; 2 0.02731  0  7.07    0 0.469 6.421 78.9 4.9671   2 242    17.8 396.9  9.14</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>lemon</span>)</div><div class='img'><img src='LocalModel-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># LocalModel also works with multiclass classification</span>
 <span class='no'>rf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/randomForest/man/randomForest.html'>randomForest</a></span>(<span class='no'>Species</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>iris</span>, <span class='kw'>ntree</span> <span class='kw'>=</span> <span class='fl'>50</span>)
 <span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='no'>iris</span>[-<span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>iris</span>) <span class='kw'>==</span> <span class='st'>"Species"</span>)]
@@ -341,7 +341,7 @@ Single row with the instance to be explained.</p></dd>
 #&gt; Petal.Length -0.2158144       1.4 -0.3021402        1.4 Petal.Length
 #&gt;                 feature.value
 #&gt; Sepal.Width   Sepal.Width=3.5
-#&gt; Petal.Length Petal.Length=1.4</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>lemon</span>)</div><div class='img'><img src='LocalModel-3.png' alt='' width='700' height='433' /></div></pre>
+#&gt; Petal.Length Petal.Length=1.4</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>lemon</span>)</div><div class='img'><img src='LocalModel-3.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
