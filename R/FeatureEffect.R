@@ -253,6 +253,174 @@ FeatureEffect <- R6Class("FeatureEffect",
         predictions[data > max(self$results[[self$feature.name]])] <- NA
       }
       predictions
+    },
+    generatePlot = function(rug = TRUE, show.data = FALSE, ylim = NULL) {
+      requireNamespace("ggplot2", quietly = TRUE)
+      if (is.null(ylim)) ylim <- c(NA, NA)
+      if (is.null(private$anchor.value)) {
+        if (self$method == "ale") {
+          private$y_axis_label <- "ALE"
+          if (!is.null(self$predictor$data$y.names) & self$n.features == 1) {
+            axis_label_names <- paste(self$predictor$data$y.names, sep = ", ")
+            private$y_axis_label <- sprintf("ALE of %s", axis_label_names)
+          }
+        } else {
+          private$y_axis_label <- expression(hat(y))
+          if (!is.null(self$predictor$data$y.names) & self$n.features == 1) {
+            axis_label_names <- paste(self$predictor$data$y.names, sep = ", ")
+            private$y_axis_label <- sprintf("Predicted %s", axis_label_names)
+          }
+        }
+      } else {
+        private$y_axis_label <- sprintf(
+          "Prediction centered at x = %s",
+          as.character(private$anchor.value)
+        )
+      }
+
+      if (self$n.features == 1) {
+        p <- ggplot(self$results,
+          mapping = aes_string(x = self$feature.name, y = ".value")
+        ) +
+          scale_y_continuous(private$y_axis_label, limits = ylim)
+        if (self$feature.type == "categorical") {
+          if (self$method %in% c("ice", "pdp+ice")) {
+            p <- p + geom_boxplot(data = self$results[self$results$.type == "ice", ], aes_string(group = self$feature.name))
+          } else {
+            p <- p + geom_col()
+          }
+        } else {
+          if (self$method %in% c("ice", "pdp+ice")) {
+            p <- p + geom_line(alpha = 0.2, mapping = aes(group = .id))
+          }
+          if (self$method == "pdp+ice") {
+            aggr <- self$results[self$results$.type != "ice", ]
+            p <- p + geom_line(data = aggr, size = 2, color = "gold")
+          }
+          if (self$method %in% c("ale", "pdp")) {
+            p <- p + geom_line()
+          }
+        }
+      } else if (self$n.features == 2) {
+        if (self$method == "ale") {
+          # 2D ALEPlot with categorical x numerical
+          if (any(self$feature.type %in% "categorical")) {
+            res <- self$results
+            categorical.feature <- self$feature.name[self$feature.type == "categorical"]
+            numerical.feature <- setdiff(self$feature.name, categorical.feature)
+            res[, categorical.feature] <- as.numeric(res[, categorical.feature])
+            cat.breaks <- unique(res[[categorical.feature]])
+            cat.labels <- levels(self$results[[categorical.feature]])[cat.breaks]
+            p <- ggplot(res, aes_string(x = categorical.feature, y = numerical.feature)) +
+              geom_rect(aes(ymin = .bottom, ymax = .top, fill = .ale, xmin = .left, xmax = .right)) +
+              scale_x_continuous(categorical.feature, breaks = cat.breaks, labels = cat.labels) +
+              scale_y_continuous(numerical.feature) +
+              scale_fill_continuous(private$y_axis_label)
+
+            # A bit stupid, but adding a rug is special here, because i handle the
+            # categorical feature as a numeric feauture in the plot
+            if (rug) {
+              dat <- private$sampler$get.x()
+              levels(dat[[categorical.feature]]) <- levels(self$results[, categorical.feature])
+              dat[, categorical.feature] <- as.numeric(dat[, categorical.feature,
+                with = FALSE
+              ][[1]])
+              # Need some dummy data for ggplot to accept the data.frame
+              rug.dat <- cbind(dat, data.frame(.value = 1, .id = 1, .ale = 1))
+              p <- p + geom_rug(
+                data = rug.dat, alpha = 0.2, sides = "bl",
+                position = position_jitter(width = 0.07, height = 0.07)
+              )
+              rug <- FALSE
+            }
+            if (show.data) {
+              dat <- private$sampler$get.x()
+              levels(dat[[categorical.feature]]) <- levels(self$results[, categorical.feature])
+              dat[, categorical.feature] <- as.numeric(dat[, categorical.feature, with = FALSE][[1]])
+              p <- p + geom_point(data = dat, alpha = 0.3)
+              show.data <- FALSE
+            }
+          } else {
+            # Adding x and y to aesthetics for the rug plot later
+            p <- ggplot(self$results, mapping = aes_string(x = self$feature.name[1], y = self$feature.name[2])) +
+              geom_rect(aes(xmin = .left, xmax = .right, ymin = .bottom, ymax = .top, fill = .ale)) +
+              scale_x_continuous(self$feature.name[1]) +
+              scale_y_continuous(self$feature.name[2]) +
+              scale_fill_continuous(private$y_axis_label)
+          }
+        } else if (all(self$feature.type %in% "numerical") | all(self$feature.type %in% "categorical")) {
+          p <- ggplot(self$results, mapping = aes_string(
+            x = self$feature.name[1],
+            y = self$feature.name[2]
+          )) +
+            geom_tile(aes(fill = .value)) +
+            scale_fill_continuous(private$y_axis_label)
+        } else {
+          categorical.feature <- self$feature.name[self$feature.type == "categorical"]
+          numerical.feature <- setdiff(self$feature.name, categorical.feature)
+          p <- ggplot(self$results, mapping = aes_string(x = numerical.feature, y = ".value")) +
+            geom_line(aes_string(group = categorical.feature, color = categorical.feature)) +
+            scale_y_continuous(private$y_axis_label)
+          show.data <- FALSE
+        }
+
+        if (show.data) {
+          dat <- private$sampler$get.x()
+          dat[, self$feature.name] <- lapply(dat[, self$feature.name, with = FALSE], as.numeric)
+          p <- p + geom_point(data = dat, alpha = 0.3)
+        }
+      }
+      if (rug) {
+        # Need some dummy data for ggplot to accept the data.frame
+        rug.dat <- private$sampler$get.x()
+        rug.dat$.id <- ifelse(is.null(self$results$.id), NA,
+          self$results$.id[1]
+        )
+        rug.dat$.type <- ifelse(is.null(self$results$.type), NA,
+          self$results$.type[1]
+        )
+        rug.dat$.value <- ifelse(is.null(self$results$.value), NA,
+          self$results$.value[1]
+        )
+        sides <- ifelse(self$n.features == 2 &&
+          self$feature.type[1] == self$feature.type[2], "bl", "b")
+
+        if (sides == "b") {
+          jitter_height <- 0
+          if (self$feature.type[1] == "numerical") {
+            jitter_width <- 0.01 * diff(range(rug.dat[, self$feature.name[1],
+              with = FALSE
+            ][[1]]))
+          } else {
+            jitter_width <- 0.07
+          }
+        } else {
+          if (all(self$feature.type == "numerical")) {
+            jitter_width <- 0.01 * diff(range(rug.dat[, self$feature.name[1],
+              with = FALSE
+            ][[1]]))
+            jitter_height <- 0.01 * diff(range(rug.dat[, self$feature.name[2],
+              with = FALSE
+            ][[1]]))
+
+          } else {
+            jitter_width <- 0.07
+            jitter_height <- 0.07
+          }
+        }
+
+        p <- p + geom_rug(
+          data = rug.dat, alpha = 0.2, sides = sides,
+          position = position_jitter(width = jitter_width, height = jitter_height)
+        )
+      }
+      
+      # CK: remove the facet
+      #if (FALSE && private$multiClass) {
+      if (private$multiClass) {
+        p <- p + facet_wrap(".class")
+      }
+      p
     }
   ),
   private = list(
@@ -420,173 +588,7 @@ FeatureEffect <- R6Class("FeatureEffect",
       cat("\ngrid size:", paste(self$grid.size, collapse = "x"))
     },
     # make sure the default arguments match with plot.FeatureEffect
-    generatePlot = function(rug = TRUE, show.data = FALSE, ylim = NULL) {
-      requireNamespace("ggplot2", quietly = TRUE)
-      if (is.null(ylim)) ylim <- c(NA, NA)
-      if (is.null(private$anchor.value)) {
-        if (self$method == "ale") {
-          private$y_axis_label <- "ALE"
-          if (!is.null(self$predictor$data$y.names) & self$n.features == 1) {
-            axis_label_names <- paste(self$predictor$data$y.names, sep = ", ")
-            private$y_axis_label <- sprintf("ALE of %s", axis_label_names)
-          }
-        } else {
-          private$y_axis_label <- expression(hat(y))
-          if (!is.null(self$predictor$data$y.names) & self$n.features == 1) {
-            axis_label_names <- paste(self$predictor$data$y.names, sep = ", ")
-            private$y_axis_label <- sprintf("Predicted %s", axis_label_names)
-          }
-        }
-      } else {
-        private$y_axis_label <- sprintf(
-          "Prediction centered at x = %s",
-          as.character(private$anchor.value)
-        )
-      }
-
-      if (self$n.features == 1) {
-        p <- ggplot(self$results,
-          mapping = aes_string(x = self$feature.name, y = ".value")
-        ) +
-          scale_y_continuous(private$y_axis_label, limits = ylim)
-        if (self$feature.type == "categorical") {
-          if (self$method %in% c("ice", "pdp+ice")) {
-            p <- p + geom_boxplot(data = self$results[self$results$.type == "ice", ], aes_string(group = self$feature.name))
-          } else {
-            p <- p + geom_col()
-          }
-        } else {
-          if (self$method %in% c("ice", "pdp+ice")) {
-            p <- p + geom_line(alpha = 0.2, mapping = aes(group = .id))
-          }
-          if (self$method == "pdp+ice") {
-            aggr <- self$results[self$results$.type != "ice", ]
-            p <- p + geom_line(data = aggr, size = 2, color = "gold")
-          }
-          if (self$method %in% c("ale", "pdp")) {
-            p <- p + geom_line()
-          }
-        }
-      } else if (self$n.features == 2) {
-        if (self$method == "ale") {
-          # 2D ALEPlot with categorical x numerical
-          if (any(self$feature.type %in% "categorical")) {
-            res <- self$results
-            categorical.feature <- self$feature.name[self$feature.type == "categorical"]
-            numerical.feature <- setdiff(self$feature.name, categorical.feature)
-            res[, categorical.feature] <- as.numeric(res[, categorical.feature])
-            cat.breaks <- unique(res[[categorical.feature]])
-            cat.labels <- levels(self$results[[categorical.feature]])[cat.breaks]
-            p <- ggplot(res, aes_string(x = categorical.feature, y = numerical.feature)) +
-              geom_rect(aes(ymin = .bottom, ymax = .top, fill = .ale, xmin = .left, xmax = .right)) +
-              scale_x_continuous(categorical.feature, breaks = cat.breaks, labels = cat.labels) +
-              scale_y_continuous(numerical.feature) +
-              scale_fill_continuous(private$y_axis_label)
-
-            # A bit stupid, but adding a rug is special here, because i handle the
-            # categorical feature as a numeric feauture in the plot
-            if (rug) {
-              dat <- private$sampler$get.x()
-              levels(dat[[categorical.feature]]) <- levels(self$results[, categorical.feature])
-              dat[, categorical.feature] <- as.numeric(dat[, categorical.feature,
-                with = FALSE
-              ][[1]])
-              # Need some dummy data for ggplot to accept the data.frame
-              rug.dat <- cbind(dat, data.frame(.value = 1, .id = 1, .ale = 1))
-              p <- p + geom_rug(
-                data = rug.dat, alpha = 0.2, sides = "bl",
-                position = position_jitter(width = 0.07, height = 0.07)
-              )
-              rug <- FALSE
-            }
-            if (show.data) {
-              dat <- private$sampler$get.x()
-              levels(dat[[categorical.feature]]) <- levels(self$results[, categorical.feature])
-              dat[, categorical.feature] <- as.numeric(dat[, categorical.feature, with = FALSE][[1]])
-              p <- p + geom_point(data = dat, alpha = 0.3)
-              show.data <- FALSE
-            }
-          } else {
-            # Adding x and y to aesthetics for the rug plot later
-            p <- ggplot(self$results, mapping = aes_string(x = self$feature.name[1], y = self$feature.name[2])) +
-              geom_rect(aes(xmin = .left, xmax = .right, ymin = .bottom, ymax = .top, fill = .ale)) +
-              scale_x_continuous(self$feature.name[1]) +
-              scale_y_continuous(self$feature.name[2]) +
-              scale_fill_continuous(private$y_axis_label)
-          }
-        } else if (all(self$feature.type %in% "numerical") | all(self$feature.type %in% "categorical")) {
-          p <- ggplot(self$results, mapping = aes_string(
-            x = self$feature.name[1],
-            y = self$feature.name[2]
-          )) +
-            geom_tile(aes(fill = .value)) +
-            scale_fill_continuous(private$y_axis_label)
-        } else {
-          categorical.feature <- self$feature.name[self$feature.type == "categorical"]
-          numerical.feature <- setdiff(self$feature.name, categorical.feature)
-          p <- ggplot(self$results, mapping = aes_string(x = numerical.feature, y = ".value")) +
-            geom_line(aes_string(group = categorical.feature, color = categorical.feature)) +
-            scale_y_continuous(private$y_axis_label)
-          show.data <- FALSE
-        }
-
-        if (show.data) {
-          dat <- private$sampler$get.x()
-          dat[, self$feature.name] <- lapply(dat[, self$feature.name, with = FALSE], as.numeric)
-          p <- p + geom_point(data = dat, alpha = 0.3)
-        }
-      }
-      if (rug) {
-        # Need some dummy data for ggplot to accept the data.frame
-        rug.dat <- private$sampler$get.x()
-        rug.dat$.id <- ifelse(is.null(self$results$.id), NA,
-          self$results$.id[1]
-        )
-        rug.dat$.type <- ifelse(is.null(self$results$.type), NA,
-          self$results$.type[1]
-        )
-        rug.dat$.value <- ifelse(is.null(self$results$.value), NA,
-          self$results$.value[1]
-        )
-        sides <- ifelse(self$n.features == 2 &&
-          self$feature.type[1] == self$feature.type[2], "bl", "b")
-
-        if (sides == "b") {
-          jitter_height <- 0
-          if (self$feature.type[1] == "numerical") {
-            jitter_width <- 0.01 * diff(range(rug.dat[, self$feature.name[1],
-              with = FALSE
-            ][[1]]))
-          } else {
-            jitter_width <- 0.07
-          }
-        } else {
-          if (all(self$feature.type == "numerical")) {
-            jitter_width <- 0.01 * diff(range(rug.dat[, self$feature.name[1],
-              with = FALSE
-            ][[1]]))
-            jitter_height <- 0.01 * diff(range(rug.dat[, self$feature.name[2],
-              with = FALSE
-            ][[1]]))
-
-          } else {
-            jitter_width <- 0.07
-            jitter_height <- 0.07
-          }
-        }
-
-        p <- p + geom_rug(
-          data = rug.dat, alpha = 0.2, sides = sides,
-          position = position_jitter(width = jitter_width, height = jitter_height)
-        )
-      }
-      
-      # CK: remove the facet wrapping.
-      if (FALSE && private$multiClass) {
-        p <- p + facet_wrap(".class")
-      }
-      p
-    },
+    ,
     # This function ensures that the grid is always of length 2 when 2 features are provided
     set.grid.size = function(size) {
       self$grid.size <- numeric(length = self$n.features)

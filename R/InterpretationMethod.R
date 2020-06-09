@@ -19,7 +19,7 @@ InterpretationMethod <- R6Class("InterpretationMethod",
     #' respective subclass.
     #' @param ... Passed to `private$generatePlot()`.
     plot = function(...) {
-      private$plotData <- private$generatePlot(...)
+      private$plotData <- public$generatePlot(...)
       if (!is.null(private$plotData)) {
         return(private$plotData)
       } else {
@@ -45,6 +45,9 @@ InterpretationMethod <- R6Class("InterpretationMethod",
     #' The aggregated results of the experiment
     results = NULL,
     # The prediction model
+    
+    # Function to generate the plot
+    generatePlot = function() NULL,
 
     #' @field predictor
     #' Predictor object.
@@ -102,8 +105,6 @@ InterpretationMethod <- R6Class("InterpretationMethod",
     },
     # The data need for plotting of results
     plotData = NULL,
-    # Function to generate the plot
-    generatePlot = function() NULL,
     # Feature names of X
     feature.names = NULL,
     printParameters = function() {}
