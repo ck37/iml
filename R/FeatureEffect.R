@@ -580,7 +580,9 @@ FeatureEffect <- R6Class("FeatureEffect",
           position = position_jitter(width = jitter_width, height = jitter_height)
         )
       }
-      if (private$multiClass) {
+      
+      # CK: remove the facet wrapping.
+      if (FALSE && private$multiClass) {
         p <- p + facet_wrap(".class")
       }
       p
